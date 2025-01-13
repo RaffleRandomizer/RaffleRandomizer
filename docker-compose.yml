@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:alpine
+    command: 
+      - redis-server
+    env_file:
+      - ./.env
+    restart: on-failure
+    container_name: random_redis
+
+  celery:
+    build: .
+    depends_on:
+      - redis
+    volumes:
+      - .:/app
+      - photo_volume:/app/media
+    command: celery -A randomizer_bot worker --loglevel=info
+    env_file:
+      - ./.env
+    container_name: random_celery
+
+  celery-beat:
+    build: .
+    depends_on:
+      - redis
+    volumes:
+      - .:/app
+      - photo_volume:/app/media
+    env_file:
+      - ./.env
+    command: celery -A randomizer_bot beat --loglevel=info
+    container_name: random_celery_beat
+
+  db_random:
+    image: postgres:14.8-alpine3.18
+    env_file:
+      - ./.env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql 
+    ports:
+      - "127.0.0.1:5434:5432"
+    container_name: db_random
+    restart: always
+          
+  bot_random:
+    build: .
+    restart: always
+    command: bash -c 'python manage.py migrate && python manage.py runbot' # on first up, add python manage.py fill_db to load text
+    volumes:
+      - photo_volume:/app/media 
+      - temp:/app/temp 
+    env_file:
+      - ./.env
+    container_name: bot_random
+
+volumes:
+  postgres:
+  photo_volume:
+  temp:
+  static_volume:
+
