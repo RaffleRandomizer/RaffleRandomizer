@@ -1,0 +1,21 @@
+from aiogram.fsm.state import State, StatesGroup
+
+class DefaultState(StatesGroup):
+    DEFAULT_STATE = State()
+    GET_DATA = State()
+    GET_CHANNEL_DATA = State()
+    GET_GIV_TEXT_AND_FILES = State()
+    GET_GIV_BUTTON_TYPE = State()
+    GET_GIV_CHANNELS_SUB = State()
+    GET_WINNERS_COUNT = State()
+    SELECT_GIV_CHANNEL = State()
+    GET_TYPE_OF_DT_GIV = State()
+    GET_TYPE_OF_END_GIV = State()
+    GIV_WAITING_END_DT = State()
+    GIV_WAITING_COUNT_USERS = State()
+    GIV_WAITING_SELECT_DT = State()
+    GIV_SAVE_OR_DELETE = State()
+    GIV_HOW_TO_END = State()
+    LOT_DT_WAIT = State()
+    LOT_COUNT_WAIT = State()
+    NEW_WINNERS_COUNT_WAIT = State()
